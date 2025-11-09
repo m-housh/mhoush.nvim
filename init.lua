@@ -17,11 +17,11 @@ vim.opt.wrap = false
 vim.opt.smartindent = true
 vim.opt.termguicolors = true
 
-
 -- Plugins
 vim.pack.add({
 	{ src = "https://github.com/catppuccin/nvim" },
 	{ src = "https://github.com/nvim-mini/mini.pick" },
+	{ src = "https://github.com/nvim-mini/mini.icons" },
 	{ src = "https://github.com/stevearc/oil.nvim" },
 	{ src = "https://github.com/neovim/nvim-lspconfig" },
 	{ src = "https://github.com/nvim-treesitter/nvim-treesitter",          version = "main" },
@@ -46,6 +46,22 @@ require("mason").setup({
 		"prettier",
 		"shellcheck",
 		"tinymist",
+	}
+})
+require("nvim-treesitter").setup({
+	ensure_installed = {
+		"bash",
+		"cmake",
+		"css",
+		"dockerfile",
+		"editorconfig",
+		"html",
+		"ini",
+		"json",
+		"jq",
+		"latex",
+		"make",
+		"yaml",
 	}
 })
 require("mini.pick").setup()
@@ -151,8 +167,8 @@ local harpoon = require("harpoon")
 map('i', 'jk', '<ESC>')
 
 map('n', '<leader>a', function() harpoon:list():add() end, { desc = "[A]dd file to harpoon" })
-map('n', '<leader>bb', ':bprevious', { desc = "[B]uffer [b]ack" })
-map('n', '<leader>bn', ':bnext', { desc = "[B]uffer [n]ext" })
+map('n', '<leader>bb', ':bprevious<CR>', { desc = "[B]uffer [b]ack" })
+map('n', '<leader>bn', ':bnext<CR>', { desc = "[B]uffer [n]ext" })
 map('n', '<leader>cf', vim.lsp.buf.format, { desc = "[F]ormat" })
 map('n', '<C-e>', function() harpoon.ui:toggle_quick_menu(harpoon:list()) end, { desc = "Open harpoon menu" })
 map('n', '<leader>e', ':Oil<CR>', { desc = "[E]xplore files" })
@@ -208,6 +224,7 @@ vim.api.nvim_create_autocmd("BufEnter", {
 		vim.cmd.setlocal("filetype=markdown")
 		vim.cmd.setlocal("textwidth=120")
 		vim.cmd.setlocal("spell spelllang=en_us")
+		vim.treesitter.start()
 	end,
 })
 
@@ -219,6 +236,7 @@ vim.api.nvim_create_autocmd("BufEnter", {
 		vim.cmd.setlocal("filetype=markdown")
 		vim.cmd.setlocal("textwidth=120")
 		vim.cmd.setlocal("spell spelllang=en_us")
+		vim.treesitter.start()
 	end,
 })
 
