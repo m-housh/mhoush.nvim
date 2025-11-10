@@ -297,7 +297,8 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 	desc = "Format on write.",
 	group = vim.api.nvim_create_augroup('my.format-on-write', defaultopts),
 	pattern = "*",
-	callback = function()
-		vim.lsp.buf.format()
+	callback = function(args)
+		require("conform").format({ bufnr = args.buf })
+		-- vim.lsp.buf.format()
 	end
 })
