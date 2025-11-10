@@ -16,6 +16,7 @@ vim.opt.signcolumn = "yes"
 vim.opt.wrap = false
 vim.opt.smartindent = true
 vim.opt.termguicolors = true
+vim.opt.conceallevel = 0
 
 -- Plugins
 vim.pack.add({
@@ -31,6 +32,7 @@ vim.pack.add({
 	{ src = "https://github.com/christoomey/vim-tmux-navigator" },
 	{ src = "https://github.com/stevearc/conform.nvim" },
 	{ src = 'https://github.com/MeanderingProgrammer/render-markdown.nvim' },
+	{ src = 'https://github.com/folke/todo-comments.nvim' },
 })
 
 require("mason").setup({
@@ -107,6 +109,7 @@ require("conform").setup({
 })
 
 require("harpoon").setup({ settings = { save_on_toggle = true, sync_on_ui_close = true } })
+require("todo-comments").setup()
 
 -- Set color scheme
 vim.cmd([[colorscheme catppuccin-mocha]])
@@ -225,6 +228,11 @@ vim.api.nvim_create_autocmd("BufEnter", {
 		vim.cmd.setlocal("textwidth=120")
 		vim.cmd.setlocal("spell spelllang=en_us")
 		vim.treesitter.start()
+		require("render-markdown").setup({
+			html = {
+				comment = { conceal = false }
+			}
+		})
 	end,
 })
 
