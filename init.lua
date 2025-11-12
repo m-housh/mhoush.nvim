@@ -81,6 +81,7 @@ require("oil").setup({
 	}
 })
 require("conform").setup({
+	log_level = vim.log.levels.DEBUG,
 	formatters = {
 		["markdown-toc"] = {
 			condition = function(_, ctx)
@@ -99,17 +100,27 @@ require("conform").setup({
 				return #diag > 0
 			end,
 		},
-		formatters_by_ft = {
-			["markdown"] = { "prettier", "markdownlint-cli2", "markdown-toc" },
-			["markdown.mdx"] = { "prettier", "markdownlint-cli2", "markdown-toc" },
-			lua = { "stulua" },
-			swift = { "swiftformat" },
+		prettier = {
+			prepend_args = { "--single-quote", "--trailing-comma=es5" },
 		},
-	}
+	},
+	formatters_by_ft = {
+		["markdown"] = { "prettier", "markdownlint-cli2", "markdown-toc" },
+		["markdown.mdx"] = { "prettier", "markdownlint-cli2", "markdown-toc" },
+		["md"] = { "prettier", "markdownlint-cli2", "markdown-toc" },
+		lua = { "stulua" },
+		swift = { "swiftformat" },
+	},
+	format_on_save = {
+		lsp_format = "fallback",
+		timeout_ms = 500,
+	},
 })
 
 require("harpoon").setup({ settings = { save_on_toggle = true, sync_on_ui_close = true } })
 require("todo-comments").setup()
+-- FIX: This shouldn't be needed based on docs.
+--require("lspconfig").setup()
 
 -- Set color scheme
 vim.cmd([[colorscheme catppuccin-mocha]])
@@ -118,10 +129,6 @@ vim.cmd [[set completeopt+=menuone,noselect,popup]]
 
 -- LSP
 --
-vim.lsp.enable({
-	"lua_ls", "tinymist", "marksman", "bashls", "hyprls", "docker-language-server",
-})
-
 vim.lsp.config('bashls', {
 	filetypes = { "bash", "sh", "zsh" },
 	cmd = { 'bash-language-server', 'start' },
@@ -163,6 +170,9 @@ vim.lsp.config("lua_ls", {
 	},
 })
 
+vim.lsp.enable({
+	"lua_ls", "tinymist", "marksman", "bashls", "hyprls", "docker-language-server"
+})
 -- Keymaps
 local map = vim.keymap.set
 local harpoon = require("harpoon")
@@ -172,7 +182,9 @@ map('i', 'jk', '<ESC>')
 map('n', '<leader>a', function() harpoon:list():add() end, { desc = "[A]dd file to harpoon" })
 map('n', '<leader>bb', ':bprevious<CR>', { desc = "[B]uffer [b]ack" })
 map('n', '<leader>bn', ':bnext<CR>', { desc = "[B]uffer [n]ext" })
-map('n', '<leader>cf', vim.lsp.buf.format, { desc = "[F]ormat" })
+map('n', '<leader>cf', function()
+	require("conform").format({ bufnr = vim.api.nvim_get_current_buf() })
+end, { desc = "[F]ormat" })
 map('n', '<C-e>', function() harpoon.ui:toggle_quick_menu(harpoon:list()) end, { desc = "Open harpoon menu" })
 map('n', '<leader>e', ':Oil<CR>', { desc = "[E]xplore files" })
 map('n', '<leader>ff', ':Pick files<CR>', { desc = "[F]ind file" })
@@ -301,12 +313,12 @@ vim.api.nvim_create_autocmd("BufEnter", {
 	end
 })
 
-vim.api.nvim_create_autocmd("BufWritePre", {
-	desc = "Format on write.",
-	group = vim.api.nvim_create_augroup('my.format-on-write', defaultopts),
-	pattern = "*",
-	callback = function(args)
-		require("conform").format({ bufnr = args.buf })
-		-- vim.lsp.buf.format()
-	end
-})
+-- vim.api.nvim_create_autocmd("BufWritePre", {
+-- 	desc = "Format on write.",
+-- 	group = vim.api.nvim_create_augroup('my.format-on-write', defaultopts),
+-- 	pattern = "*",
+-- 	callback = function(args)
+-- 		require("conform").format({ bufnr = args.buf })
+-- 		-- vim.lsp.buf.format()
+-- 	end
+-- })
