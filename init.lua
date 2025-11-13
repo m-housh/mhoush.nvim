@@ -192,6 +192,7 @@ map('n', '<leader>fh', ':Pick help<CR>', { desc = "[H]elp search" })
 map('n', '<leader>hb', function() harpoon:list():prev() end, { desc = "[H]arpoon [b]ack" })
 map('n', '<leader>hn', function() harpoon:list():next() end, { desc = "[H]arpoon [n]ext" })
 map('n', '<leader>o', ':update<CR> :source<CR>', { desc = "Source current file" })
+map('n', '<leader>?', ':map<CR>', { desc = "Show key maps" })
 
 -- Tmux / pane navigation
 map('n', "<C-h>", "<cmd><C-U>TmuxNavigateLeft<CR>")
