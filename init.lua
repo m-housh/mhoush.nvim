@@ -170,8 +170,10 @@ vim.lsp.config("lua_ls", {
 	},
 })
 
+vim.lsp.config('sourcekit', {})
+
 vim.lsp.enable({
-	"lua_ls", "tinymist", "marksman", "bashls", "hyprls", "docker-language-server"
+	"lua_ls", "tinymist", "marksman", "bashls", "hyprls", "docker-language-server", 'sourcekit'
 })
 -- Keymaps
 local map = vim.keymap.set
