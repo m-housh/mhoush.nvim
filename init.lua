@@ -33,6 +33,7 @@ vim.pack.add({
 	{ src = "https://github.com/stevearc/conform.nvim" },
 	{ src = 'https://github.com/MeanderingProgrammer/render-markdown.nvim' },
 	{ src = 'https://github.com/folke/todo-comments.nvim' },
+	{ src = 'https://github.com/3rd/image.nvim' },
 })
 
 require("mason").setup({
@@ -119,8 +120,18 @@ require("conform").setup({
 
 require("harpoon").setup({ settings = { save_on_toggle = true, sync_on_ui_close = true } })
 require("todo-comments").setup()
--- FIX: This shouldn't be needed based on docs.
---require("lspconfig").setup()
+require('image').setup({
+	backend = 'kitty',
+	build = false,
+	processor = 'magick_cli',
+	integrations = {
+		markdown = {
+			enabled = true,
+			only_render_image_at_cursor = true,
+			only_render_image_at_cursor_mode = 'popup',
+		},
+	}
+})
 
 -- Set color scheme
 vim.cmd([[colorscheme catppuccin-mocha]])
