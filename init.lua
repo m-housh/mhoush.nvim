@@ -243,6 +243,7 @@ map('n', '<leader>ff', ':Pick files<CR>', { desc = "[F]ind file" })
 map('n', '<leader>fh', ':Pick help<CR>', { desc = "[H]elp search" })
 map('n', '<leader>hb', function() harpoon:list():prev() end, { desc = "[H]arpoon [b]ack" })
 map('n', '<leader>hn', function() harpoon:list():next() end, { desc = "[H]arpoon [n]ext" })
+map('n', '<leader>k', vim.lsp.buf.hover, { desc = "Show lsp hover" })
 map('n', '<leader>lc', function()
 		local cmd = prompt_for_short_link(get_url())
 		local output = trimNewline(vim.fn.system(cmd))
@@ -260,6 +261,19 @@ map('n', '<leader>ls', function()
 		vim.cmd("read !" .. cmd)
 	end,
 	{ desc = "Generate a short link, inserting on current line." }
+)
+map({ 'i', 'n' }, '<leader>lv', function()
+		local url = trimNewline(vim.fn.system("wl-paste"))
+		local cmd = prompt_for_short_link(url)
+		local output = trimNewline(vim.fn.system(cmd))
+		if not output or output == "" then
+			print("Got empty output")
+			return
+		end
+		local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+		vim.api.nvim_buf_set_text(0, row - 1, col, row - 1, col, { output })
+	end,
+	{ desc = "Generate a short link from clipboard contents, inserting on current line." }
 )
 map('n', '<leader>o', ':update<CR> :source<CR>', { desc = "Source current file" })
 map('t', '<leader>q', ':bdelete', { desc = "[Q]uit terminal" })
