@@ -190,8 +190,47 @@ vim.lsp.enable({
 local map = vim.keymap.set
 local harpoon = require("harpoon")
 
-map('i', 'jk', '<ESC>')
+-- Trim whitespace from string.
+function trim(s)
+	return (s:gsub("^%s*(.-)%s*$", "%1"))
+end
 
+-- Helper function that prompts for user input to generate a short link.
+function prompt_for_short_link(s)
+	local url = s
+	if not url or string.len(url) == 0 then
+		url = vim.fn.input("URL: ")
+	end
+
+	local tags = vim.fn.input("[Optional] Tag(s) (seperated by commas): ")
+	local expires = vim.fn.input("[Optional] Expire: ")
+	local cmd = "shorten-url --no-spin create"
+
+	for tag in tags:gmatch('([^,]+)') do
+		cmd = cmd .. " --tag " .. trim(tag)
+	end
+
+	if string.len(expires) > 0 then
+		cmd = cmd .. " --expire " .. expires
+	end
+
+	cmd = cmd .. " " .. url
+
+	return cmd
+end
+
+-- Get url on the current line.
+function get_url()
+	local line = vim.api.nvim_get_current_line()
+	return string.match(line, '[a-z]*://[^ ,;]*')
+end
+
+-- Remove trailing newline if present
+function trimNewline(s)
+	return s:gsub("\n$", "")
+end
+
+map('i', 'jk', '<ESC>')
 map('n', '<leader>a', function() harpoon:list():add() end, { desc = "[A]dd file to harpoon" })
 map('n', '<leader>bb', ':bprevious<CR>', { desc = "[B]uffer [b]ack" })
 map('n', '<leader>bn', ':bnext<CR>', { desc = "[B]uffer [n]ext" })
@@ -204,6 +243,24 @@ map('n', '<leader>ff', ':Pick files<CR>', { desc = "[F]ind file" })
 map('n', '<leader>fh', ':Pick help<CR>', { desc = "[H]elp search" })
 map('n', '<leader>hb', function() harpoon:list():prev() end, { desc = "[H]arpoon [b]ack" })
 map('n', '<leader>hn', function() harpoon:list():next() end, { desc = "[H]arpoon [n]ext" })
+map('n', '<leader>lc', function()
+		local cmd = prompt_for_short_link(get_url())
+		local output = trimNewline(vim.fn.system(cmd))
+		if output == "" then
+			print("Got empty output")
+			return
+		end
+		-- Replace occurence of the url with the shortened url.
+		vim.cmd(":%s/" .. vim.fn.escape(url, "/") .. "/" .. vim.fn.escape(output, "/"))
+	end,
+	{ desc = "[L]ink [c]onvert to short link." }
+)
+map('n', '<leader>ls', function()
+		local cmd = prompt_for_short_link()
+		vim.cmd("read !" .. cmd)
+	end,
+	{ desc = "Generate a short link, inserting on current line." }
+)
 map('n', '<leader>o', ':update<CR> :source<CR>', { desc = "Source current file" })
 map('t', '<leader>q', ':bdelete', { desc = "[Q]uit terminal" })
 map('n', '<leader>xq', ':cclose', { desc = "Close Quickfix" })
@@ -328,13 +385,3 @@ vim.api.nvim_create_autocmd("BufEnter", {
 		vim.cmd.setlocal("iskeyword+=-")
 	end
 })
-
--- vim.api.nvim_create_autocmd("BufWritePre", {
--- 	desc = "Format on write.",
--- 	group = vim.api.nvim_create_augroup('my.format-on-write', defaultopts),
--- 	pattern = "*",
--- 	callback = function(args)
--- 		require("conform").format({ bufnr = args.buf })
--- 		-- vim.lsp.buf.format()
--- 	end
--- })
