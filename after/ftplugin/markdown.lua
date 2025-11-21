@@ -7,7 +7,7 @@ local keywords = { "WARN", "WARNING", "IMPORTANT" }
 vim.keymap.set(
 	"n",
 	"<leader>tw",
-	"<CMD>Trouble todo toggle filter = {tag = {WARN, IMPORTANT}}<CR>",
+	"<CMD>TodoQuickFix filter = {tag = {WARN, IMPORTANT}}<CR>",
 	{ desc = "[T]odo [W]arnings" }
 )
 

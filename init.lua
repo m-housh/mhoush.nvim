@@ -119,7 +119,12 @@ require("conform").setup({
 })
 
 require("harpoon").setup({ settings = { save_on_toggle = true, sync_on_ui_close = true } })
-require("todo-comments").setup()
+require("todo-comments").setup({
+	keywords = {
+		FIX = { alt = { "IMPORTANT" } },
+		NOTE = { alt = { "MARK", "NB" } },
+	},
+})
 require('image').setup({
 	backend = 'kitty',
 	build = false,
@@ -204,6 +209,7 @@ function prompt_for_short_link(s)
 
 	local tags = vim.fn.input("[Optional] Tag(s) (seperated by commas): ")
 	local expires = vim.fn.input("[Optional] Expire: ")
+	local shortCode = vim.fn.input("[Optional] Short Code: ")
 	local cmd = "shorten-url --no-spin create"
 
 	for tag in tags:gmatch('([^,]+)') do
@@ -214,20 +220,30 @@ function prompt_for_short_link(s)
 		cmd = cmd .. " --expire " .. expires
 	end
 
-	cmd = cmd .. " " .. url
+	if string.len(shortCode) > 0 then
+		cmd = cmd .. " --code " .. shortCode
+	end
 
+	cmd = cmd .. " " .. url
+	print(cmd)
 	return cmd
 end
 
 -- Get url on the current line.
 function get_url()
 	local line = vim.api.nvim_get_current_line()
-	return string.match(line, '[a-z]*://[^ ,;]*')
+	local url = string.match(line, 'http?s://[^ ,;)]*')
+	print(url)
+	return url
 end
 
 -- Remove trailing newline if present
 function trimNewline(s)
 	return s:gsub("\n$", "")
+end
+
+function trimQuotes(s)
+	return s:gsub("\"", "")
 end
 
 map('i', 'jk', '<ESC>')
@@ -244,13 +260,15 @@ map('n', '<leader>fh', ':Pick help<CR>', { desc = "[H]elp search" })
 map('n', '<leader>hb', function() harpoon:list():prev() end, { desc = "[H]arpoon [b]ack" })
 map('n', '<leader>hn', function() harpoon:list():next() end, { desc = "[H]arpoon [n]ext" })
 map('n', '<leader>k', vim.lsp.buf.hover, { desc = "Show lsp hover" })
-map('n', '<leader>lc', function()
-		local cmd = prompt_for_short_link(get_url())
+map({ 'n', 'x', 'v' }, '<leader>lc', function()
+		local url = get_url()
+		local cmd = prompt_for_short_link(url)
 		local output = trimNewline(vim.fn.system(cmd))
 		if output == "" then
 			print("Got empty output")
 			return
 		end
+		output = trimQuotes(output)
 		-- Replace occurence of the url with the shortened url.
 		vim.cmd(":%s/" .. vim.fn.escape(url, "/") .. "/" .. vim.fn.escape(output, "/"))
 	end,
