@@ -34,6 +34,7 @@ vim.pack.add({
 	{ src = 'https://github.com/MeanderingProgrammer/render-markdown.nvim' },
 	{ src = 'https://github.com/folke/todo-comments.nvim' },
 	{ src = 'https://github.com/3rd/image.nvim' },
+	{ src = 'https://git.housh.dev/michael/shortenurl.nvim' },
 })
 
 require("mason").setup({
@@ -195,57 +196,6 @@ vim.lsp.enable({
 local map = vim.keymap.set
 local harpoon = require("harpoon")
 
--- Trim whitespace from string.
-function trim(s)
-	return (s:gsub("^%s*(.-)%s*$", "%1"))
-end
-
--- Helper function that prompts for user input to generate a short link.
-function prompt_for_short_link(s)
-	local url = s
-	if not url or string.len(url) == 0 then
-		url = vim.fn.input("URL: ")
-	end
-
-	local tags = vim.fn.input("[Optional] Tag(s) (seperated by commas): ")
-	local expires = vim.fn.input("[Optional] Expire: ")
-	local shortCode = vim.fn.input("[Optional] Short Code: ")
-	local cmd = "shorten-url --no-spin create"
-
-	for tag in tags:gmatch('([^,]+)') do
-		cmd = cmd .. " --tag " .. trim(tag)
-	end
-
-	if string.len(expires) > 0 then
-		cmd = cmd .. " --expire " .. expires
-	end
-
-	if string.len(shortCode) > 0 then
-		cmd = cmd .. " --code " .. shortCode
-	end
-
-	cmd = cmd .. " " .. url
-	print(cmd)
-	return cmd
-end
-
--- Get url on the current line.
-function get_url()
-	local line = vim.api.nvim_get_current_line()
-	local url = string.match(line, 'http?s://[^ ,;)]*')
-	print(url)
-	return url
-end
-
--- Remove trailing newline if present
-function trimNewline(s)
-	return s:gsub("\n$", "")
-end
-
-function trimQuotes(s)
-	return s:gsub("\"", "")
-end
-
 map('i', 'jk', '<ESC>')
 map('n', '<leader>a', function() harpoon:list():add() end, { desc = "[A]dd file to harpoon" })
 map('n', '<leader>bb', ':bprevious<CR>', { desc = "[B]uffer [b]ack" })
@@ -260,37 +210,13 @@ map('n', '<leader>fh', ':Pick help<CR>', { desc = "[H]elp search" })
 map('n', '<leader>hb', function() harpoon:list():prev() end, { desc = "[H]arpoon [b]ack" })
 map('n', '<leader>hn', function() harpoon:list():next() end, { desc = "[H]arpoon [n]ext" })
 map('n', '<leader>k', vim.lsp.buf.hover, { desc = "Show lsp hover" })
-map({ 'n', 'x', 'v' }, '<leader>lc', function()
-		local url = get_url()
-		local cmd = prompt_for_short_link(url)
-		local output = trimNewline(vim.fn.system(cmd))
-		if output == "" then
-			print("Got empty output")
-			return
-		end
-		output = trimQuotes(output)
-		-- Replace occurence of the url with the shortened url.
-		vim.cmd(":%s/" .. vim.fn.escape(url, "/") .. "/" .. vim.fn.escape(output, "/"))
-	end,
+map({ 'n', 'x', 'v' }, '<leader>lc', function() require('shortenurl').convertUrl() end,
 	{ desc = "[L]ink [c]onvert to short link." }
 )
-map('n', '<leader>ls', function()
-		local cmd = prompt_for_short_link()
-		vim.cmd("read !" .. cmd)
-	end,
+map('n', '<leader>ls', function() require('shortenurl').prompt() end,
 	{ desc = "Generate a short link, inserting on current line." }
 )
-map({ 'i', 'n' }, '<leader>lv', function()
-		local url = trimNewline(vim.fn.system("wl-paste"))
-		local cmd = prompt_for_short_link(url)
-		local output = trimNewline(vim.fn.system(cmd))
-		if not output or output == "" then
-			print("Got empty output")
-			return
-		end
-		local row, col = unpack(vim.api.nvim_win_get_cursor(0))
-		vim.api.nvim_buf_set_text(0, row - 1, col, row - 1, col, { output })
-	end,
+map({ 'i', 'n' }, '<leader>lv', function() require('shortenurl').convertFromClipboard() end,
 	{ desc = "Generate a short link from clipboard contents, inserting on current line." }
 )
 map('n', '<leader>o', ':update<CR> :source<CR>', { desc = "Source current file" })
