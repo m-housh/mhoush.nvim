@@ -4,6 +4,7 @@
 -- Options
 vim.g.netrw_browsex_viewer = "xdg-open"
 vim.g.mapleader = " "
+vim.g.markdown_folding = 1
 vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.swapfile = false
@@ -272,6 +273,7 @@ vim.api.nvim_create_autocmd("BufEnter", {
 		vim.cmd.setlocal("textwidth=100")
 		vim.cmd.setlocal("spell spelllang=en_us")
 		vim.treesitter.start()
+		vim.opt.foldlevel = 1
 		require("render-markdown").setup({
 			html = {
 				comment = { conceal = false }
