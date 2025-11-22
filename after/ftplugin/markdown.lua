@@ -18,3 +18,8 @@ end, { desc = "[W]arning - [n]ext" })
 vim.keymap.set("n", "<leader>wp", function()
 	todos.jump_prev({ keywords = keywords })
 end, { desc = "[W]arning - [p]revious" })
+
+vim.keymap.set({ 'n', 'v', 'x' }, '<leader>x',
+	':lua require("toggle-checkbox").toggle()<CR>',
+	{ desc = "Complete checkbox" }
+)

@@ -35,6 +35,7 @@ vim.pack.add({
 	{ src = 'https://github.com/folke/todo-comments.nvim' },
 	{ src = 'https://github.com/3rd/image.nvim' },
 	{ src = 'https://git.housh.dev/michael/shortenurl.nvim' },
+	{ src = 'https://github.com/opdavies/toggle-checkbox.nvim.git' },
 })
 
 require("mason").setup({
