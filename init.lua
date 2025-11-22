@@ -269,7 +269,7 @@ vim.api.nvim_create_autocmd("BufEnter", {
 		-- HACK: Set filetype to markdown for '.md' files.
 		-- Not sure why it doesn't detect these as markdown files, but this fixes the issue.
 		vim.cmd.setlocal("filetype=markdown")
-		vim.cmd.setlocal("textwidth=120")
+		vim.cmd.setlocal("textwidth=100")
 		vim.cmd.setlocal("spell spelllang=en_us")
 		vim.treesitter.start()
 		require("render-markdown").setup({
