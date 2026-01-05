@@ -209,6 +209,7 @@ map('n', '<C-e>', function() harpoon.ui:toggle_quick_menu(harpoon:list()) end, {
 map('n', '<leader>e', ':Oil<CR>', { desc = "[E]xplore files" })
 map('n', '<leader>ff', ':Pick files<CR>', { desc = "[F]ind file" })
 map('n', '<leader>fh', ':Pick help<CR>', { desc = "[H]elp search" })
+map('n', 'gd', vim.lsp.buf.definition, { desc = "[G]oto [d]efinition" })
 map('n', '<leader>hb', function() harpoon:list():prev() end, { desc = "[H]arpoon [b]ack" })
 map('n', '<leader>hn', function() harpoon:list():next() end, { desc = "[H]arpoon [n]ext" })
 map('n', '<leader>k', vim.lsp.buf.hover, { desc = "Show lsp hover" })
