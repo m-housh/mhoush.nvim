@@ -141,7 +141,9 @@ require('image').setup({
 		},
 	}
 })
-require('coverage').setup()
+require('coverage').setup({
+	auto_reload = true,
+})
 
 -- Set color scheme
 vim.cmd([[colorscheme catppuccin-mocha]])
