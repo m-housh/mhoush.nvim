@@ -37,6 +37,7 @@ vim.pack.add({
 	{ src = 'https://github.com/3rd/image.nvim' },
 	{ src = 'https://git.housh.dev/michael/shortenurl.nvim' },
 	{ src = 'https://github.com/opdavies/toggle-checkbox.nvim.git' },
+	{ src = 'https://github.com/andythigpen/nvim-coverage.git' },
 })
 
 require("mason").setup({
@@ -140,6 +141,7 @@ require('image').setup({
 		},
 	}
 })
+require('coverage').setup()
 
 -- Set color scheme
 vim.cmd([[colorscheme catppuccin-mocha]])
