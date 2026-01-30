@@ -206,7 +206,7 @@ map('i', 'jk', '<ESC>')
 map('n', '<leader>a', function() harpoon:list():add() end, { desc = "[A]dd file to harpoon" })
 map('n', '<leader>bb', ':bprevious<CR>', { desc = "[B]uffer [b]ack" })
 map('n', '<leader>bn', ':bnext<CR>', { desc = "[B]uffer [n]ext" })
-map('n', '<leader>c', ":CoverageToggle<CR>", { desc = "Toggle [C]ode coverage" })
+map('n', '<leader>cc', ":CoverageToggle<CR>", { desc = "Toggle [c]ode [c]overage" })
 map('n', '<leader>cf', function()
 	require("conform").format({ bufnr = vim.api.nvim_get_current_buf() })
 end, { desc = "[F]ormat" })
@@ -351,4 +351,12 @@ vim.api.nvim_create_autocmd("BufEnter", {
 	callback = function()
 		vim.cmd.setlocal("iskeyword+=-")
 	end
+})
+
+-- Start code coverage plugin.
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = "swift",
+	callback = function()
+		vim.cmd("Coverage")
+	end,
 })
