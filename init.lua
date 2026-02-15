@@ -38,6 +38,8 @@ vim.pack.add({
 	{ src = 'https://git.housh.dev/michael/shortenurl.nvim' },
 	{ src = 'https://github.com/opdavies/toggle-checkbox.nvim.git' },
 	{ src = 'https://github.com/andythigpen/nvim-coverage.git' },
+	{ src = 'https://github.com/MagicDuck/grug-far.nvim.git' },
+
 })
 
 require("mason").setup({
