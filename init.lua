@@ -46,10 +46,11 @@ vim.pack.add({
 require('mason').setup()
 require("mason-lspconfig").setup({
 	ensure_installed = {
-		"bash-language-server",
-		"docker-language-server",
-		"hyprls",
-		"lua-language-server",
+		"bashls",
+		"docker_language_server",
+		"docker_compose_language_service",
+		"lua_ls",
+		"marksman"
 	}
 })
 require("nvim-treesitter").setup({
