@@ -28,7 +28,7 @@ vim.pack.add({
 	{ src = "https://github.com/neovim/nvim-lspconfig" },
 	{ src = "https://github.com/nvim-treesitter/nvim-treesitter",          version = "main" },
 	{ src = "https://github.com/mason-org/mason.nvim" },
-	{ src = "https://github.com/mason-org/mason-lspconfig.nvim" },
+	-- { src = "https://github.com/mason-org/mason-lspconfig.nvim" },
 	{ src = "https://github.com/nvim-lua/plenary.nvim" },
 	{ src = "https://github.com/ThePrimeagen/harpoon",                     version = "harpoon2" },
 	{ src = "https://github.com/christoomey/vim-tmux-navigator" },
@@ -44,15 +44,15 @@ vim.pack.add({
 })
 
 require('mason').setup()
-require("mason-lspconfig").setup({
-	ensure_installed = {
-		"bashls",
-		"docker_language_server",
-		"docker_compose_language_service",
-		"lua_ls",
-		"marksman"
-	}
-})
+-- require("mason-lspconfig").setup({
+-- 	ensure_installed = {
+-- 		"bashls",
+-- 		"docker_language_server",
+-- 		"docker_compose_language_service",
+-- 		"lua_ls",
+-- 		"marksman"
+-- 	}
+-- })
 require("nvim-treesitter").setup({
 	ensure_installed = {
 		"bash",
