@@ -216,7 +216,17 @@ map('n', '<leader>fh', ':Pick help<CR>', { desc = "[H]elp search" })
 map('n', '<leader>hb', function() harpoon:list():prev() end, { desc = "[H]arpoon [b]ack" })
 map('n', '<leader>hn', function() harpoon:list():next() end, { desc = "[H]arpoon [n]ext" })
 map('n', 'gk', vim.lsp.buf.hover, { desc = "Show lsp hover" })
-map('n', 'gd', vim.lsp.buf.definition, { desc = "[G]o to [d]efinition" })
+map('n', 'gd', function()
+		vim.lsp.buf.definition({
+			on_list = function(list)
+				-- Jump to first definition, rather than open up a quick fix list
+				-- (this helps with 'swift' at least always opens quickfix list for the type and the 'init' function)
+				vim.lsp.util.jump_to_location(list.items[1])
+			end
+		})
+	end,
+	{ desc = "[G]o to [d]efinition" }
+)
 map({ 'n', 'x', 'v' }, '<leader>lc', function() require('shortenurl').convertUrl() end,
 	{ desc = "[L]ink [c]onvert to short link." }
 )
