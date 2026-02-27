@@ -4,6 +4,7 @@
 -- Options
 vim.g.netrw_browsex_viewer = "xdg-open"
 vim.g.mapleader = " "
+vim.g.maplocalleader = ","
 vim.g.markdown_folding = 1
 vim.opt.number = true
 vim.opt.relativenumber = true
