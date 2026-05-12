@@ -105,7 +105,14 @@ require("conform").setup({
 			end,
 		},
 		prettier = {
-			prepend_args = { "--single-quote", "--trailing-comma=es5" },
+			prepend_args = function()
+				return {
+					"--config",
+					vim.fn.expand("$HOME/.prettierrc.json"),
+					"--config-precedence",
+					"prefer-file",
+				}
+			end,
 		},
 	},
 	formatters_by_ft = {
